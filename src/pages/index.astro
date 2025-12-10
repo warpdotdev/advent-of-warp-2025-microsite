@@ -3,6 +3,10 @@ import "../styles/global.css";
 import "@fontsource/gelasio";
 import { getCollection, render } from "astro:content";
 
+const BASE_W = 1048;
+const BASE_H = 638;
+const toPct = (value: number, base: number) => ((value / base) * 100).toFixed(4);
+
 // Drawer positions from Figma (relative to calendar container at 232,172)
 // Format: [day, left, top, width, height]
 const drawers = [
@@ -31,7 +35,7 @@ const drawers = [
   [23, 696, 397, 82, 151],
   [24, 782, 397, 82, 229],
   [25, 868, 397, 168, 229],
-];
+] as const;
 
 const days = await getCollection("days");
 const daysWithContent = await Promise.all(
@@ -51,20 +55,29 @@ const daysWithContent = await Promise.all(
 		<title>Advent Calendar</title>
 	</head>
 <body>
-		<div class="calendar">
-			{drawers.map(([day, left, top, width, height]) => (
-				<button
-					class="drawer"
-					data-day={day}
-					style={`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`}
-				>
-					<img
-						src={`/assets/drawers/day-${day}.png`}
-						alt={`Day ${day}`}
-					/>
-				</button>
-			))}
-		</div>
+		<main class="page">
+			<div class="calendar">
+				{drawers.map(([day, left, top, width, height]) => {
+					const leftPct = toPct(left, BASE_W);
+					const topPct = toPct(top, BASE_H);
+					const widthPct = toPct(width, BASE_W);
+					const heightPct = toPct(height, BASE_H);
+
+					return (
+						<button
+							class="drawer"
+							data-day={day}
+							style={`left: ${leftPct}%; top: ${topPct}%; width: ${widthPct}%; height: ${heightPct}%;`}
+						>
+							<img
+								src={`/assets/drawers/day-${day}.png`}
+								alt={`Day ${day}`}
+							/>
+						</button>
+					);
+				})}
+			</div>
+		</main>
 
 		<dialog id="modal">
 			<button class="close-btn" aria-label="Close">&times;</button>
@@ -116,10 +129,19 @@ const daysWithContent = await Promise.all(
 </html>
 
 <style>
+	.page {
+		width: 100%;
+		padding: 1rem;
+		display: flex;
+		justify-content: center;
+	}
+
 	.calendar {
 		position: relative;
-		width: 1048px;
-		height: 638px;
+		width: 100%;
+		max-width: 1048px;
+		aspect-ratio: 1048 / 638;
+		box-sizing: border-box;
 		background-image: url('/assets/wood-texture.png');
 		background-size: cover;
 		border-radius: 14px;
