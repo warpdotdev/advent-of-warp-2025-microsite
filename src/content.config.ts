@@ -5,7 +5,7 @@ import { z } from 'astro/zod';
 const days = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/days' }),
   schema: z.object({
-    url: z.string().url(),
+    url: z.string(),
   }),
 });
 

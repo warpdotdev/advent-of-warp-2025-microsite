@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { getCollection, render } from "astro:content";
 
 // Drawer positions from Figma (relative to calendar container at 232,172)
 // Format: [day, left, top, width, height]
@@ -30,6 +31,14 @@ const drawers = [
   [24, 782, 397, 82, 229],
   [25, 868, 397, 168, 229],
 ];
+
+const days = await getCollection("days");
+const daysWithContent = await Promise.all(
+  days.map(async (day) => {
+    const { Content } = await render(day);
+    return { ...day, Content };
+  })
+);
 ---
 
 <html lang="en">
@@ -43,14 +52,65 @@ const drawers = [
 <body>
 		<div class="calendar">
 			{drawers.map(([day, left, top, width, height]) => (
-				<img
-					src={`/assets/drawers/day-${day}.png`}
-					alt={`Day ${day}`}
+				<button
 					class="drawer"
+					data-day={day}
 					style={`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`}
-				/>
+				>
+					<img
+						src={`/assets/drawers/day-${day}.png`}
+						alt={`Day ${day}`}
+					/>
+				</button>
 			))}
 		</div>
+
+		<dialog id="modal">
+			<button class="close-btn" aria-label="Close">&times;</button>
+			<div class="modal-content">
+				<h2 id="modal-title"></h2>
+				<div id="modal-body"></div>
+				<a id="modal-link" href="#" target="_blank" rel="noopener" class="tweet-btn">View Tweet</a>
+			</div>
+		</dialog>
+
+		<!-- Pre-rendered content for each day -->
+		<div id="day-content" style="display: none;">
+			{daysWithContent.map((day) => (
+				<div data-content={day.id} data-url={day.data.url}>
+					<day.Content />
+				</div>
+			))}
+		</div>
+
+		<script>
+			const modal = document.getElementById('modal') as HTMLDialogElement;
+			const modalTitle = document.getElementById('modal-title')!;
+			const modalBody = document.getElementById('modal-body')!;
+			const modalLink = document.getElementById('modal-link') as HTMLAnchorElement;
+			const closeBtn = modal.querySelector('.close-btn')!;
+
+			document.querySelectorAll('.drawer[data-day]').forEach((btn) => {
+				btn.addEventListener('click', () => {
+					const day = btn.getAttribute('data-day');
+					const paddedDay = day!.padStart(2, '0');
+					const content = document.querySelector(`[data-content="${paddedDay}"]`);
+					
+					console.log(content, paddedDay)
+					if (content) {
+						modalTitle.textContent = `Day ${day}`;
+						modalBody.innerHTML = content.innerHTML;
+						modalLink.href = content.getAttribute('data-url') || '#';
+						modal.showModal();
+					}
+				});
+			});
+
+			closeBtn.addEventListener('click', () => modal.close());
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) modal.close();
+			});
+		</script>
 	</body>
 </html>
 
@@ -68,7 +128,101 @@ const drawers = [
 
 	.drawer {
 		position: absolute;
+		border-radius: 4px;
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: pointer;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.drawer:hover {
+		transform: scale(1.02);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	}
+
+	.drawer img {
+		width: 100%;
+		height: 100%;
 		object-fit: cover;
 		border-radius: 4px;
+		display: block;
+	}
+
+	/* Modal styles */
+	dialog {
+		padding: 0;
+		border: none;
+		border-radius: 12px;
+		max-width: 500px;
+		width: 90%;
+		background-image: url('/assets/letter-texture.png');
+		background-size: cover;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+		border: 4px solid #4C1319;
+	}
+
+	dialog::backdrop {
+		background: rgba(0, 0, 0, 0.7);
+	}
+
+	.modal-content {
+		padding: 2rem;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		background: rgba(0, 0, 0, 0.3);
+		border: none;
+		font-size: 1.5rem;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		cursor: pointer;
+		color: white;
+		line-height: 1;
+		transition: background 0.15s ease;
+	}
+
+	.close-btn:hover {
+		background: rgba(0, 0, 0, 0.5);
+	}
+
+	#modal-title {
+		margin: 0 0 1rem;
+		font-size: 1.5rem;
+		color: #1d3d11;
+	}
+
+	#modal-body {
+		color: #333;
+		line-height: 1.6;
+		margin-bottom: 1.5rem;
+	}
+
+	#modal-body p {
+		margin: 0 0 0.75rem;
+	}
+
+	#modal-body ul {
+		margin: 0 0 0.75rem;
+		padding-left: 1.5rem;
+	}
+
+	.tweet-btn {
+		display: inline-block;
+		background: #1d3d11;
+		color: white;
+		padding: 0.75rem 1.5rem;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 500;
+		transition: background 0.15s ease;
+	}
+
+	.tweet-btn:hover {
+		background: #2a5a1a;
 	}
 </style>
