@@ -1,5 +1,35 @@
 ---
+import "../styles/global.css";
 
+// Drawer positions from Figma (relative to calendar container at 232,172)
+// Format: [day, left, top, width, height]
+const drawers = [
+  [1, 8, 8, 254, 229],
+  [2, 266, 8, 168, 152],
+  [3, 438, 8, 168, 229],
+  [4, 610, 8, 254, 152],
+  [5, 868, 8, 168, 152],
+  [6, 8, 241, 82, 152],
+  [7, 94, 241, 168, 152],
+  [8, 266, 164, 168, 151],
+  [9, 438, 241, 168, 74],
+  [10, 610, 164, 82, 151],
+  [11, 696, 164, 168, 151],
+  [12, 868, 164, 168, 73],
+  [13, 8, 397, 254, 74],
+  [14, 266, 319, 82, 152],
+  [15, 352, 319, 168, 152],
+  [16, 524, 319, 168, 229],
+  [17, 696, 319, 168, 74],
+  [18, 868, 241, 168, 152],
+  [19, 8, 475, 168, 151],
+  [20, 180, 475, 254, 151],
+  [21, 438, 475, 82, 151],
+  [22, 524, 552, 254, 74],
+  [23, 696, 397, 82, 151],
+  [24, 782, 397, 82, 229],
+  [25, 868, 397, 168, 229],
+];
 ---
 
 <html lang="en">
@@ -8,9 +38,37 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Advent Calendar</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+<body>
+		<div class="calendar">
+			{drawers.map(([day, left, top, width, height]) => (
+				<img
+					src={`/assets/drawers/day-${day}.png`}
+					alt={`Day ${day}`}
+					class="drawer"
+					style={`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`}
+				/>
+			))}
+		</div>
 	</body>
 </html>
+
+<style>
+	.calendar {
+		position: relative;
+		width: 1048px;
+		height: 638px;
+		background-image: url('/assets/wood-texture.png');
+		background-size: cover;
+		border-radius: 14px;
+		border: 6px solid rgba(167, 157, 211, 0.8);
+		box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.3);
+	}
+
+	.drawer {
+		position: absolute;
+		object-fit: cover;
+		border-radius: 4px;
+	}
+</style>
