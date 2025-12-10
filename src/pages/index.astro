@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "@fontsource/gelasio";
 import { getCollection, render } from "astro:content";
 
 // Drawer positions from Figma (relative to calendar container at 232,172)
@@ -154,12 +155,19 @@ const daysWithContent = await Promise.all(
 		padding: 0;
 		border: none;
 		border-radius: 12px;
+		min-width: 400px;
 		max-width: 500px;
 		width: 90%;
+		min-height: 300px;
 		background-image: url('/assets/letter-texture.png');
 		background-size: cover;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 		border: 4px solid #4C1319;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		margin: 0;
 	}
 
 	dialog::backdrop {
@@ -168,6 +176,8 @@ const daysWithContent = await Promise.all(
 
 	.modal-content {
 		padding: 2rem;
+		font-family: 'Gelasio', serif;
+		text-align: center;
 	}
 
 	.close-btn {
@@ -200,6 +210,7 @@ const daysWithContent = await Promise.all(
 		color: #333;
 		line-height: 1.6;
 		margin-bottom: 1.5rem;
+		text-align: left;
 	}
 
 	#modal-body p {
