@@ -1,10 +1,8 @@
 # ❄️ Advent of Warp 2025
 
-A calendar of 25 tips to use [Warp](https://warp.dev) more effectively.
+A calendar of 25 tips to use [Warp](https://warp.dev) more effectively, built entirely using Warp's Agent Mode.
 
-> 🤖 **Built entirely using Warp's Agent Mode.**
-
-## 🧞 Commands
+## Setup
 
 All commands are run from the root of the project, from a terminal:
 
