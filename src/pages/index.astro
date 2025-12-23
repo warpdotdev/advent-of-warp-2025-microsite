@@ -3,38 +3,38 @@ import "../styles/global.css";
 import "@fontsource/gelasio";
 import { getCollection, render } from "astro:content";
 
-const BASE_W = 1048;
-const BASE_H = 638;
+const BASE_W = 1042;
+const BASE_H = 632;
 const toPct = (value: number, base: number) => ((value / base) * 100).toFixed(4);
 
-// Drawer positions from Figma (relative to calendar container at 232,172)
+// Drawer positions from Figma (relative to calendar container with 6px padding)
 // Format: [day, left, top, width, height]
 const drawers = [
-  [1, 8, 8, 254, 229],
-  [2, 266, 8, 168, 152],
-  [3, 438, 8, 168, 229],
-  [4, 610, 8, 254, 152],
-  [5, 868, 8, 168, 152],
-  [6, 8, 241, 82, 152],
-  [7, 94, 241, 168, 152],
-  [8, 266, 164, 168, 151],
-  [9, 438, 241, 168, 74],
-  [10, 610, 164, 82, 151],
-  [11, 696, 164, 168, 64],
-  [12, 868, 164, 168, 160],
-  [13, 8, 397, 254, 74],
-  [14, 266, 319, 82, 152],
-  [15, 352, 319, 168, 152],
-  [16, 524, 319, 168, 229],
-  [17, 696, 232, 168, 161],
-  [18, 868, 328, 168, 64],
-  [19, 8, 475, 168, 151],
-  [20, 180, 475, 254, 151],
-  [21, 438, 475, 82, 151],
-  [22, 524, 552, 254, 74],
-  [23, 696, 397, 82, 151],
-  [24, 782, 397, 82, 229],
-  [25, 868, 397, 168, 229],
+  [1, 6, 6, 256, 231],
+  [2, 264, 6, 170, 154],
+  [3, 436, 6, 170, 231],
+  [4, 608, 6, 256, 154],
+  [5, 866, 6, 170, 154],
+  [6, 6, 239, 85, 154],
+  [7, 92, 239, 170, 154],
+  [8, 264, 162, 170, 153],
+  [9, 436, 239, 170, 76],
+  [10, 608, 162, 84, 153],
+  [11, 694, 162, 170, 66],
+  [12, 866, 162, 170, 162],
+  [13, 6, 397, 256, 71],
+  [14, 264, 317, 84, 153],
+  [15, 350, 319, 170, 149],
+  [16, 522, 317, 170, 231],
+  [17, 694, 230, 170, 163],
+  [18, 866, 326, 170, 66],
+  [19, 6, 473, 170, 153],
+  [20, 178, 473, 256, 153],
+  [21, 436, 473, 84, 154],
+  [22, 522, 550, 256, 76],
+  [23, 694, 395, 84, 153],
+  [24, 780, 395, 84, 231],
+  [25, 866, 395, 170, 231],
 ] as const;
 
 const days = await getCollection("days");
@@ -144,7 +144,8 @@ const daysWithContent = await Promise.all(
 		box-sizing: border-box;
 		background-color: #3d2a1a;
 		border-radius: 14px;
-		border: 8px solid transparent;
+		padding: 6px;
+		border: 6px solid transparent;
 		border-image: url('/assets/wood-texture.png') 30 round;
 		box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.3);
 	}
