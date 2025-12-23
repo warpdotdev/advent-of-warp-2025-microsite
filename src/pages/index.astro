@@ -89,7 +89,7 @@ const daysWithContent = await Promise.all(
 			<div class="modal-content">
 				<h2 id="modal-title"></h2>
 				<div id="modal-body"></div>
-				<a id="modal-link" href="#" target="_blank" rel="noopener" class="tweet-btn">View Tweet</a>
+				<a id="modal-link" href="#" target="_blank" rel="noopener" class="cta-button">See how it works</a>
 			</div>
 		</dialog>
 
@@ -164,6 +164,17 @@ const daysWithContent = await Promise.all(
 		</script>
 	</body>
 </html>
+
+<style is:global>
+	#modal-body code {
+		background: rgba(76, 19, 25, 0.08);
+		border: 1px solid #4C1319;
+		border-radius: 4px;
+		padding: 0.1rem 0.35rem;
+		font-size: 0.95em;
+		display: inline-block;
+	}
+</style>
 
 <style>
 	.page {
@@ -289,7 +300,7 @@ const daysWithContent = await Promise.all(
 	}
 
 	.modal-content {
-		padding: 2rem;
+		padding: 1.2rem;
 		font-family: 'Gelasio', serif;
 		text-align: center;
 	}
@@ -336,7 +347,7 @@ const daysWithContent = await Promise.all(
 		padding-left: 1.5rem;
 	}
 
-	.tweet-btn {
+	.cta-button {
 		display: inline-block;
 		background: #1d3d11;
 		color: white;
@@ -344,10 +355,10 @@ const daysWithContent = await Promise.all(
 		border-radius: 8px;
 		text-decoration: none;
 		font-weight: 500;
-		transition: background 0.15s ease;
+		transition: background-color 0.15s ease;
 	}
 
-	.tweet-btn:hover {
+	.cta-button:hover {
 		background: #2a5a1a;
 	}
 </style>
