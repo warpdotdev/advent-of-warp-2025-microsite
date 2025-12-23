@@ -1,5 +1,7 @@
-@import "tailwindcss";
-
 body {
-  @apply min-h-screen flex items-center justify-center bg-neutral-900;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #171717;
 }
