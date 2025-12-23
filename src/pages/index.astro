@@ -259,21 +259,6 @@ const daysWithContent = await Promise.all(
 		animation: letter-slide-rotate 200ms ease forwards;
 	}
 
-	/* View transition styles */
-	::view-transition-old(active-letter) {
-		animation: none;
-		opacity: 0;
-	}
-
-	::view-transition-new(active-letter) {
-		animation: none;
-	}
-
-	::view-transition-group(active-letter) {
-		animation-duration: 200ms;
-		animation-timing-function: ease;
-	}
-
 	/* Modal styles */
 	dialog {
 		padding: 0;
