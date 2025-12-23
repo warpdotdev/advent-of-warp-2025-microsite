@@ -67,7 +67,7 @@ const daysWithContent = await Promise.all(
 						<button
 							class="drawer"
 							data-day={day}
-							style={`left: ${leftPct}%; top: ${topPct}%; width: ${widthPct}%; height: ${heightPct}% ${day === 22 ? "z-index: 100" : ""}`}
+							style={`left: ${leftPct}%; top: ${topPct}%; width: ${widthPct}%; height: ${heightPct}%`}
 						>
 							<img
 								src={`/assets/drawers/day-${day}.png`}
@@ -109,19 +109,51 @@ const daysWithContent = await Promise.all(
 			const modalLink = document.getElementById('modal-link') as HTMLAnchorElement;
 			const closeBtn = modal.querySelector('.close-btn')!;
 
+			const SLIDE_ROTATE_DURATION = 200; // ms for slide out + rotate animation
+
+			let activeLetter: HTMLElement | null = null;
+
 			document.querySelectorAll('.drawer[data-day]').forEach((btn) => {
 				btn.addEventListener('click', () => {
 					const day = btn.getAttribute('data-day');
 					const paddedDay = day!.padStart(2, '0');
 					const content = document.querySelector(`[data-content="${paddedDay}"]`);
+					const letter = btn.querySelector('.letter') as HTMLElement;
 					
-					console.log(content, paddedDay)
-					if (content) {
-						modalTitle.textContent = `Day ${day}`;
-						modalBody.innerHTML = content.innerHTML;
-						modalLink.href = content.getAttribute('data-url') || '#';
-						modal.showModal();
-					}
+					if (!content) return;
+
+					// Store content for later
+					modalTitle.textContent = `Day ${day}`;
+					modalBody.innerHTML = content.innerHTML;
+					modalLink.href = content.getAttribute('data-url') || '#';
+
+					// Step 1 & 2: Slide out and rotate via keyframe animation
+					letter.classList.add('animating');
+					activeLetter = letter;
+
+					// Step 3: After animation completes, do view transition to modal
+					setTimeout(() => {
+						if (!document.startViewTransition) {
+							modal.showModal();
+							letter.classList.remove('animating');
+							return;
+						}
+
+						// Give the letter a view-transition-name for the morph
+						letter.style.viewTransitionName = 'active-letter';
+						modal.style.viewTransitionName = 'active-letter';
+
+						const transition = document.startViewTransition(() => {
+							letter.classList.remove('animating');
+							letter.style.viewTransitionName = '';
+							modal.showModal();
+						});
+
+						transition.finished.then(() => {
+							modal.style.viewTransitionName = '';
+							activeLetter = null;
+						});
+					}, SLIDE_ROTATE_DURATION);
 				});
 			});
 
@@ -171,6 +203,11 @@ const daysWithContent = await Promise.all(
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	}
 
+	/* One off. 22 is positioned below day 23 visually, so increase z-index */
+	.drawer[data-day="22"] {
+		z-index: 1;
+	}
+
 	.drawer > img:first-child {
 		width: 100%;
 		height: 100%;
@@ -182,18 +219,48 @@ const daysWithContent = await Promise.all(
 	.letter {
 		position: absolute;
 		left: 50%;
-		top: 3px;
+		top: 0;
 		width: 100%;
-		max-width: 150px;
-		height: auto;
-		transform: translateX(-50%) translateY(0%);
+		max-width: 200px;
+		aspect-ratio: 4/3;
+		transform: translateX(-50%) translateY(20%) rotate(90deg);
+
 		transition: transform 0.25s ease-out;
 		pointer-events: none;
 		z-index: -1;
 	}
 
 	.drawer:hover .letter {
-		transform: translateX(-50%) translateY(-40%);
+		transform: translateX(-50%) translateY(-40%) rotate(90deg);
+	}
+
+	/* Letter slide-out and rotate animation */
+	@keyframes letter-slide-rotate {
+		0% {
+			transform: translateX(-50%) translateY(-40%) rotate(90deg);
+		}
+		100% {
+			transform: translateX(-50%) translateY(-110%);
+		}
+	}
+
+	.letter.animating {
+		animation: letter-slide-rotate 200ms ease forwards;
+	}
+
+	/* View transition styles */
+	::view-transition-old(active-letter) {
+		animation: none;
+		opacity: 0;
+	}
+
+	::view-transition-new(active-letter) {
+		animation: none;
+	}
+
+	::view-transition-group(active-letter) {
+		animation-duration: 200ms;
+		animation-timing-function: ease;
 	}
 
 	/* Modal styles */
@@ -214,6 +281,7 @@ const daysWithContent = await Promise.all(
 		left: 50%;
 		transform: translate(-50%, -50%);
 		margin: 0;
+		aspect-ratio: 4 / 3;
 	}
 
 	dialog::backdrop {
