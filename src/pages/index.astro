@@ -56,7 +56,8 @@ const daysWithContent = await Promise.all(
 	</head>
 <body class="winter-bg">
 		<main class="page">
-			<div class="calendar">
+			<div class="calendar-frame">
+				<div class="calendar">
 				{drawers.map(([day, left, top, width, height]) => {
 					const leftPct = toPct(left, BASE_W);
 					const topPct = toPct(top, BASE_H);
@@ -81,6 +82,7 @@ const daysWithContent = await Promise.all(
 						</button>
 					);
 				})}
+				</div>
 			</div>
 		</main>
 
@@ -191,18 +193,32 @@ const daysWithContent = await Promise.all(
 		justify-content: center;
 	}
 
-	.calendar {
+	.calendar-frame {
 		position: relative;
 		width: 100%;
 		max-width: 1048px;
 		aspect-ratio: 1048 / 638;
-		box-sizing: border-box;
-		background-color: #3d2a1a;
-		border-radius: 14px;
 		padding: 6px;
-		border: 6px solid transparent;
-		border-image: url('/assets/wood-texture.png') 30 round;
+		box-sizing: border-box;
+		border-radius: 14px;
 		box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.3);
+	}
+
+	.calendar-frame::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: url('/assets/wood-texture.png') repeat;
+		border-radius: 14px;
+		z-index: -1;
+	}
+
+	.calendar {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background-color: #3d2a1a;
+		border-radius: 8px;
 	}
 
 	.drawer {
